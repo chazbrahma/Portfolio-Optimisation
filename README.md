@@ -3,11 +3,13 @@
 This project aims to optimize portfolio performance by applying portfolio theory and Monte Carlo simulations. It assesses different portfolio strategies under varying market conditions (Bull, Bear, and Sideways) and compares key metrics such as return, risk, and Sharpe ratio for each strategy.
 
 Key Goals of the Project:
+
 Portfolio Optimization: Use historical stock data to create optimized portfolios (Max Sharpe Ratio and Min Risk portfolios) and compare them with an Equal-Weighted portfolio.
 Market Condition Analysis: Evaluate portfolio performance under different market conditions (Bull, Bear, Sideways).
 Actionable Insights: Provide insights into the best-performing portfolio strategy under different market conditions.
 
 Dataset:
+
 The dataset used for this analysis consists of the adjusted closing prices of several high-performing index funds:
 
 SPY: S&P 500 ETF
@@ -17,6 +19,7 @@ IVV: iShares Core S&P 500 ETF
 These index funds provide a strong foundation for diversified portfolio strategies.
 
 Key Features:
+
 Adjusted Closing Prices: Used to calculate daily and monthly returns for portfolio analysis.
 Portfolio Weights: Randomly generated and optimized weights for different portfolio strategies.
 Market Conditions: Classifications of market days into Bull, Bear, and Sideways markets, based on daily stock performance.
@@ -57,6 +60,7 @@ Risk: The standard deviation of returns, representing portfolio volatility.
 Sharpe Ratio: A measure of risk-adjusted return.
 
 Results:
+
 After running the Monte Carlo simulation and evaluating portfolio performance, key insights include:
 The Max Sharpe Ratio portfolio tends to outperform during Bull markets due to higher returns but exhibits higher volatility.
 The Min Risk portfolio performs well in Bear markets, offering more stability with lower volatility.
@@ -64,16 +68,19 @@ The Equal Weighted portfolio shows balanced performance across all market condit
 
 
 Future Work:
+
 Exploring Additional Algorithms: Applying different optimization algorithms like Genetic Algorithms or Gradient Descent to enhance portfolio optimization.
 Incorporating More Features: Using other economic indicators (e.g., inflation, interest rates) to further refine the model.
 Advanced Feature Engineering: Adding features such as asset correlations, which may improve the optimization process.
 
 Visualizations:
+
 Several visualizations were created to analyze portfolio performance under different market conditions:
 Bar Plots: Show average returns and risk for each portfolio under Bull, Bear, and Sideways markets.
 Efficient Frontier: Displays the trade-off between risk and return for simulated portfolios.
 
 Technologies Used:
+
 Python: The primary language used for data analysis and portfolio optimization.
 Jupyter Notebook: Used to develop and run the code interactively.
 Pandas & NumPy: For data manipulation and financial calculations.
@@ -81,5 +88,6 @@ Matplotlib: For data visualization, particularly portfolio performance under dif
 cvxpy: For solving optimization problems related to portfolio weights.
 
 Conclusion:
+
 This project successfully developed a predictive framework for optimizing portfolios using Monte Carlo simulations and market condition analysis. The results provide valuable insights for investors seeking to adjust their portfolio strategies based on market environments, helping them balance risk and return. Future improvements could include exploring additional optimization algorithms and incorporating more economic data into the model.
 
