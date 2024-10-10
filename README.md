@@ -50,6 +50,7 @@ Compare the performance of the three portfolio strategies across different marke
 Visualize the results with bar charts and dataframes to better understand performance trends.
 
 Model Evaluation:
+
 Metrics:
 Return: The average daily return for each portfolio strategy.
 Risk: The standard deviation of returns, representing portfolio volatility.
