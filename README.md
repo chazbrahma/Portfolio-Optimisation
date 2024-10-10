@@ -25,6 +25,7 @@ Problem Statement:
 How can we optimize portfolio performance under different market conditions? This project applies Monte Carlo simulations to evaluate various portfolio strategies, comparing them based on key metrics such as returns, risk, and Sharpe ratios.
 
 Methodology:
+
 Data Preprocessing:
 Download Historical Data: Retrieve historical data for index funds using yfinance.
 Calculate Returns: Calculate daily returns from adjusted closing prices.
