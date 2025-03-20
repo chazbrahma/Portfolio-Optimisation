@@ -23,24 +23,24 @@ We computed daily returns as the percentage change from one day’s close to the
 We annualized the average daily returns and the covariance matrix by multiplying by 252 (typical number of trading days per year).
 
 # Key Steps
-1. Portfolio Performance Calculation
+Portfolio Performance Calculation
 Each portfolio is defined by a set of weights that sum to 1 (or 100%). We calculate:
 
 Portfolio Return: The sum of (weight × annual return) across all assets.
 Portfolio Volatility: The square root of (weights × covariance matrix × weightsᵀ).
-Sharpe Ratio: (Portfolio Return − Risk-Free Rate) / Portfolio Volatility.
-2. Maximum Sharpe Optimization
-Using numerical optimization (e.g., SLSQP), we minimize the negative Sharpe ratio. This effectively maximizes the Sharpe ratio to find the portfolio with the best risk-return trade-off.
 
+Sharpe Ratio: (Portfolio Return − Risk-Free Rate) / Portfolio Volatility.
+Maximum Sharpe Optimization
+Using numerical optimization (e.g., SLSQP), we minimize the negative Sharpe ratio. This effectively maximizes the Sharpe ratio to find the portfolio with the best risk-return trade-off.
 Without Bounds: The solver might push certain weights to zero.
 Minimum Weight Bounds: For more practical allocations, we can enforce a lower bound (e.g., 5%) per asset. This ensures no ticker is completely excluded.
-3. Efficient Frontier
+
+Efficient Frontier
 We also compute the efficient frontier by targeting different levels of annual return and minimizing volatility. Each point on this frontier is an “efficient” portfolio—there is no better solution that offers a higher return at the same risk or lower risk at the same return.
 
-4. Random Portfolios
+Random Portfolios
 To give a sense of scale, we generate random portfolios by assigning random weights (that sum to 1) and plot them. This cluster of points often scatters below (or around) the efficient frontier, highlighting how random guesses rarely match a well-optimized result.
-
-5. Capital Deployment
+Capital Deployment
 To see how the final solution translates into practical trades, we assume a certain investment amount (e.g., $100,000).
 
 Allocate that total capital by each ticker’s weight.
