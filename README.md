@@ -1,93 +1,155 @@
 # Portfolio-Optimisation
 
-This project aims to optimize portfolio performance by applying portfolio theory and Monte Carlo simulations. It assesses different portfolio strategies under varying market conditions (Bull, Bear, and Sideways) and compares key metrics such as return, risk, and Sharpe ratio for each strategy.
+# Introduction
+This repository demonstrates a quantitative approach to Modern Portfolio Theory (MPT) using publicly available market data. The goal is to find an optimal portfolio allocation that maximizes the risk-adjusted return (Sharpe Ratio) while respecting practical constraints, such as a minimum weight per asset.
 
-Key Goals of the Project:
+In simpler terms, we are trying to answer questions like:
 
-Portfolio Optimization: Use historical stock data to create optimized portfolios (Max Sharpe Ratio and Min Risk portfolios) and compare them with an Equal-Weighted portfolio.
-Market Condition Analysis: Evaluate portfolio performance under different market conditions (Bull, Bear, Sideways).
-Actionable Insights: Provide insights into the best-performing portfolio strategy under different market conditions.
+Which combination of stocks yields the highest return for a given level of risk?
+How do we visualize the trade-off between risk and return (the efficient frontier)?
+How can we ensure that each asset gets a certain minimum share in the portfolio (so we don’t end up with zero allocation in assets we find valuable)?
+How do we deploy actual capital using these final weights (e.g., how many shares to buy with a fixed investment)?
+By blending classical MPT with practical constraints, we produce a more “real-world” solution, suitable for a portfolio manager or a quant researcher’s daily workflow.
 
-Dataset:
+# Data & Tickers
+Tickers Used: AAPL, MSFT, GOOGL, AMZN, TSLA
+Data Source: Downloaded from Yahoo Finance
+Date Range: 2020-01-01 to 2025-01-01
+Price Type: “Close” or “Adj Close,” depending on preferences. For unadjusted data, “Close” is used with auto_adjust=False.
+During the data collection step:
 
-The dataset used for this analysis consists of the adjusted closing prices of several high-performing index funds:
+We fetched daily closing prices for each ticker.
+We computed daily returns as the percentage change from one day’s close to the next.
+We annualized the average daily returns and the covariance matrix by multiplying by 252 (typical number of trading days per year).
 
-SPY: S&P 500 ETF
-VOO: Vanguard S&P 500 ETF
-QQQ: Invesco QQQ Trust
-IVV: iShares Core S&P 500 ETF
-These index funds provide a strong foundation for diversified portfolio strategies.
+# Key Steps
+1. Portfolio Performance Calculation
+Each portfolio is defined by a set of weights that sum to 1 (or 100%). We calculate:
 
-Key Features:
+Portfolio Return: The sum of (weight × annual return) across all assets.
+Portfolio Volatility: The square root of (weights × covariance matrix × weightsᵀ).
+Sharpe Ratio: (Portfolio Return − Risk-Free Rate) / Portfolio Volatility.
+2. Maximum Sharpe Optimization
+Using numerical optimization (e.g., SLSQP), we minimize the negative Sharpe ratio. This effectively maximizes the Sharpe ratio to find the portfolio with the best risk-return trade-off.
 
-Adjusted Closing Prices: Used to calculate daily and monthly returns for portfolio analysis.
-Portfolio Weights: Randomly generated and optimized weights for different portfolio strategies.
-Market Conditions: Classifications of market days into Bull, Bear, and Sideways markets, based on daily stock performance.
+Without Bounds: The solver might push certain weights to zero.
+Minimum Weight Bounds: For more practical allocations, we can enforce a lower bound (e.g., 5%) per asset. This ensures no ticker is completely excluded.
+3. Efficient Frontier
+We also compute the efficient frontier by targeting different levels of annual return and minimizing volatility. Each point on this frontier is an “efficient” portfolio—there is no better solution that offers a higher return at the same risk or lower risk at the same return.
 
-Problem Statement:
-How can we optimize portfolio performance under different market conditions? This project applies Monte Carlo simulations to evaluate various portfolio strategies, comparing them based on key metrics such as returns, risk, and Sharpe ratios.
+4. Random Portfolios
+To give a sense of scale, we generate random portfolios by assigning random weights (that sum to 1) and plot them. This cluster of points often scatters below (or around) the efficient frontier, highlighting how random guesses rarely match a well-optimized result.
 
-Methodology:
+5. Capital Deployment
+To see how the final solution translates into practical trades, we assume a certain investment amount (e.g., $100,000).
 
-Data Preprocessing:
-Download Historical Data: Retrieve historical data for index funds using yfinance.
-Calculate Returns: Calculate daily returns from adjusted closing prices.
-Market Classification: Classify market days into Bull, Bear, and Sideways conditions using a threshold-based approach.
+Allocate that total capital by each ticker’s weight.
+Divide by the latest price to figure out how many shares to buy.
+Floor to an integer so you can’t buy partial shares.
+Summarize how much capital was actually spent on each ticker and note any leftover cash.
 
-Portfolio Optimization:
-Max Sharpe Ratio Portfolio: Optimizes portfolio weights to maximize the Sharpe ratio.
-Min Risk Portfolio: Optimizes portfolio weights to minimize risk.
-Equal Weighted Portfolio: A portfolio that assigns equal weights to all assets.
+# Figures
+Two main figures appear in this repository:
 
-Monte Carlo Simulation:
-Simulate thousands of random portfolio weights and calculate their returns, risk (volatility), and Sharpe ratios.
-Identify the optimal portfolios based on these simulations.
+# Efficient Frontier (Min Weight)
 
-Performance Evaluation by Market Conditions:
-Market Condition Classification: Use SPY's daily returns to classify each day into Bull, Bear, or Sideways markets.
-Portfolio Returns: Calculate daily returns for Max Sharpe, Min Risk, and Equal-Weighted portfolios.
-Performance by Condition: Evaluate portfolio performance metrics (average return, risk, Sharpe ratio) in each market condition.
+Shows the risk–return “frontier” as a dashed line.
+Depicts random portfolios as scattered light-blue dots.
+Highlights the “Max Sharpe” portfolio with a large red star.
 
-Visualization and Analysis:
-Compare the performance of the three portfolio strategies across different market conditions.
-Visualize the results with bar charts and dataframes to better understand performance trends.
+# Portfolio Allocation (Pie Chart)
 
-Model Evaluation:
+Reveals the final distribution of weights across the tickers, after optimization.
+For example, a solution might assign ~35% to AAPL, ~43% to TSLA, ~5% each to MSFT and AMZN, and ~11% to GOOGL.
+This result depends on your chosen bounds (e.g., 5% min weight) and data.
 
-Metrics:
-Return: The average daily return for each portfolio strategy.
-Risk: The standard deviation of returns, representing portfolio volatility.
-Sharpe Ratio: A measure of risk-adjusted return.
+# Sample Results & Analysis
+Below is an illustrative example of the final output you might see:
 
-Results:
+Optimal Weights (with min weight = 5%)
 
-After running the Monte Carlo simulation and evaluating portfolio performance, key insights include:
-The Max Sharpe Ratio portfolio tends to outperform during Bull markets due to higher returns but exhibits higher volatility.
-The Min Risk portfolio performs well in Bear markets, offering more stability with lower volatility.
-The Equal Weighted portfolio shows balanced performance across all market conditions, serving as a good default option in uncertain markets.
+AAPL: ~35%
+MSFT: ~5%
+GOOGL: ~11%
+AMZN: ~5%
+TSLA: ~44%
+Performance Metrics
+
+Annual Return: ~49%
+Volatility: ~40%
+Sharpe Ratio: ~1.16
+Capital Deployment ($100,000 example)
+
+AAPL: ~$35,000
+MSFT: ~$5,000
+GOOGL: ~$11,000
+AMZN: ~$5,000
+TSLA: ~$44,000
+Leftover Cash: ~$1,000
+
+# Interpretation:
+
+The solver suggests large allocations to assets with high returns, but also decent risk–adjusted potential.
+The minimum weight constraint ensures at least 5% in MSFT and AMZN, preventing them from dropping to 0%.
+Depending on market conditions, these numbers might shift drastically (e.g., if TSLA had extremely high variance, the solver might exclude it if not forced by min weights).
 
 
-Future Work:
+# Why We Might See “Strange” Allocations
+Zero Weights: Without minimum weight bounds, some tickers might get 0%. If the solver believes an asset isn’t improving the risk-return trade-off, it excludes it.
+High Concentrations: If a particular asset offers unusually high returns relative to its risk, the model might heavily overweight it. This is mathematically correct under MPT assumptions but might be undesirable in real life (leading to poor diversification).
+Solver Warnings: If SciPy warns about “values in x being outside bounds,” it means the iterative process tested a solution outside your [min, max] constraints. It clamps them back in range and continues.
 
-Exploring Additional Algorithms: Applying different optimization algorithms like Genetic Algorithms or Gradient Descent to enhance portfolio optimization.
-Incorporating More Features: Using other economic indicators (e.g., inflation, interest rates) to further refine the model.
-Advanced Feature Engineering: Adding features such as asset correlations, which may improve the optimization process.
+# Conclusion
+This Portfolio Optimization pipeline demonstrates how to:
 
-Visualizations:
+Download & Clean stock data,
+Compute returns and risk metrics,
+Solve for a maximum Sharpe ratio portfolio under constraints,
+Visualize the result with an efficient frontier and a final portfolio allocation chart,
+Deploy capital in a real-world sense by calculating share counts and leftover cash.
+By incorporating practical constraints (like a minimum weight) and capital-based share calculations, this approach moves closer to real-world usage compared to a purely theoretical MPT model. The final results provide a strong foundation for further enhancements, such as:
 
-Several visualizations were created to analyze portfolio performance under different market conditions:
-Bar Plots: Show average returns and risk for each portfolio under Bull, Bear, and Sideways markets.
-Efficient Frontier: Displays the trade-off between risk and return for simulated portfolios.
+Extending to more tickers and different asset classes (bonds, commodities).
+Introducing transaction costs and short-selling constraints.
+Using advanced risk measures (e.g., CVaR) instead of standard deviation.
+Periodically rebalancing to maintain target weights.
+Whether you’re a quant researcher, portfolio manager, or finance student, these concepts and visual outputs offer deep insights into how your portfolio balances risk vs. return — and how you can tune constraints to align with your personal or institutional risk preferences.
 
-Technologies Used:
+# Future Work
+Include Additional Asset Classes
 
-Python: The primary language used for data analysis and portfolio optimization.
-Jupyter Notebook: Used to develop and run the code interactively.
-Pandas & NumPy: For data manipulation and financial calculations.
-Matplotlib: For data visualization, particularly portfolio performance under different market conditions.
-cvxpy: For solving optimization problems related to portfolio weights.
+Integrate bonds, commodities, and cryptocurrencies for a more diversified portfolio.
+Investigate how correlations change when mixing traditional and alternative assets.
+Advanced Risk Measures
 
-Conclusion:
+Replace standard deviation with Conditional Value at Risk (CVaR) or Drawdown-based metrics.
+Incorporate tail-risk management or downside risk approaches for more robust optimization.
+Transaction Costs and Slippage
 
-This project successfully developed a predictive framework for optimizing portfolios using Monte Carlo simulations and market condition analysis. The results provide valuable insights for investors seeking to adjust their portfolio strategies based on market environments, helping them balance risk and return. Future improvements could include exploring additional optimization algorithms and incorporating more economic data into the model.
+Model bid-ask spreads, commissions, and market impact.
+Re-run optimizations to see if small trades or frequent rebalancing are cost-effective.
+Dynamic or Rolling Optimization
+
+Use rolling windows of historical data (e.g., last 1-year) to update portfolio weights periodically.
+Investigate how shifting market conditions affect the “optimal” solution over time.
+Robust / Bayesian Approaches
+
+Account for estimation errors in returns and covariances with robust or Bayesian optimization.
+Stress-test the portfolio for different macroeconomic scenarios.
+Deployment
+
+Wrap the final code into a web dashboard (e.g., Streamlit) for real-time usage.
+Automate data fetching and rebalancing triggers to handle daily or weekly updates.
+
+# Acknowledgments
+Author: This project is courtesy of Chazin Brahma, who assembled a clear, quant-focused pipeline blending Modern Portfolio Theory with real-world constraints.
+Libraries:
+pandas, numpy, matplotlib, seaborn for data manipulation and visualization,
+yfinance for fetching historical price data,
+scipy for numerical optimization.
+Inspiration: Classic portfolio theory from Markowitz, combined with practical touches (capital deployment, minimum weights) that appeal to real quant usage.
+
+
+
+
 
